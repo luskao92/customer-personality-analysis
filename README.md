@@ -147,7 +147,7 @@ customer-personality-analysis/
 ├── LICENSE
 ├── notebook_customer_personality_-_Final_Version.ipynb
 │
-├── marketing_campaign.csv     ← dataset principal - Customer Personality Analysis · TSV · 2.240 linhas
+├── marketing_campaign.csv                ← dataset principal - Customer Personality Analysis · TSV · 2.240 linhas
 ├── marketing_campaign_clean.csv          ← visão 1 · pós-limpeza · escala original
 ├── marketing_campaign_normalized.csv     ← visão 2 · MinMaxScaler [0, 1]
 ├── marketing_campaign_standardized.csv   ← visão 3 · StandardScaler (μ=0, σ=1)

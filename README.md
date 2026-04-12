@@ -4,7 +4,7 @@
 > **MVP — Análise Exploratória e Pré-processamento de Dados · PUC-Rio**
 > Entrega: 12 de Abril de 2026
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)]([https://colab.research.google.com/drive/1ZOiC7Z-4pTtv903pb_ldQl5Dep0Vo4Xh?usp=sharing](https://colab.research.google.com/github/luskao92/customer-personality-analysis/blob/main/notebook_customer_personality.ipynb))
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/luskao92/customer-personality-analysis/blob/main/notebook_customer_personality.ipynb)
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python&logoColor=white)
 ![Pandas](https://img.shields.io/badge/Pandas-2.0-150458?style=flat&logo=pandas&logoColor=white)
 ![Seaborn](https://img.shields.io/badge/Seaborn-visualização-4c72b0?style=flat)

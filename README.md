@@ -1,178 +1,190 @@
 # 📊 Customer Personality Analysis
 ### Segmentação Comportamental, LTV e Propensão à Conversão em Campanhas de Marketing
 
-> **MVP — Análise Exploratória e Pré-processamento de Dados**
-> PUC-Rio · Entrega: 12 de Abril de 2026
+> **MVP — Análise Exploratória e Pré-processamento de Dados · PUC-Rio**
+> Entrega: 12 de Abril de 2026
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1ZOiC7Z-4pTtv903pb_ldQl5Dep0Vo4Xh?usp=sharing)
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python&logoColor=white)
-![Pandas](https://img.shields.io/badge/Pandas-150458?style=flat&logo=pandas&logoColor=white)
-![Seaborn](https://img.shields.io/badge/Seaborn-3776AB?style=flat&logo=python&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Em%20desenvolvimento-F9AB00?style=flat)
+![Pandas](https://img.shields.io/badge/Pandas-2.0-150458?style=flat&logo=pandas&logoColor=white)
+![Seaborn](https://img.shields.io/badge/Seaborn-visualização-4c72b0?style=flat)
+![SciPy](https://img.shields.io/badge/SciPy-estatística-8CAAE6?style=flat)
+![Status](https://img.shields.io/badge/Status-Concluído-4CAF50?style=flat)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat)
 
 ---
 
 ## 🎯 Problema de Negócio
 
-Uma empresa de varejo multicanal deseja otimizar sua estratégia de **Marketing de Performance e CRM** identificando os segmentos de clientes com maior **LTV (Lifetime Value)** e maior **propensão à conversão em campanhas**, com foco especial no impacto do **perfil familiar** (presença ou ausência de filhos) no comportamento de compra e na preferência por canal de mídia.
+Times de **Marketing de Performance e CRM** enfrentam um desafio recorrente: a base de clientes é heterogênea, mas os recursos de mídia e campanhas são limitados. Investir igualmente em todos os segmentos é ineficiente — o retorno concentra-se em perfis específicos.
 
-**Pergunta central:**
-> *Quais características demográficas e comportamentais definem os segmentos de clientes com maior LTV e maior propensão à conversão em campanhas de marketing — e como o perfil familiar modera essas relações?*
+Este projeto analisa dados de **2.240 clientes** de uma empresa de varejo multicanal para responder:
 
-**Tipo de problema:** Supervisionado (classificação binária — `Response`) + Não supervisionado (segmentação RFM e perfil familiar)
+> *Quais características demográficas e comportamentais definem os segmentos com maior LTV e maior propensão à conversão em campanhas de marketing — e como o perfil familiar modera essas relações?*
+
+**Tipo de problema:**
+- **Supervisionado (implícito):** `Response` (aceitou última campanha: 0/1) como variável-alvo
+- **Não supervisionado:** segmentação RFM e por perfil familiar (`HasChildren`)
+
+---
+
+## 💡 Principais Achados
+
+| # | Achado | Impacto de Negócio |
+|---|--------|--------------------|
+| 1 | Top 20% dos clientes concentram ~70% do faturamento | Supera Pareto 80/20 — retenção é prioridade absoluta |
+| 2 | Não-pais gastam 2.6× mais em vinhos e 2.4× mais em carnes | Portfólio premium deve ser direcionado ao segmento sem filhos |
+| 3 | Canal catálogo supera digital em correlação com conversão | Revisão de alocação de budget de mídia recomendada |
+| 4 | Visitas ao site sem compra correlacionam negativamente com conversão | KPI de engajamento deve ser compras, não visitas |
+| 5 | Pais mais sensíveis a descontos; não-pais convertem mais em campanhas formais | CRM deve usar estratégias distintas por segmento |
 
 ---
 
 ## 🔬 Hipóteses Testadas
 
-| # | Hipótese | Variáveis |
-|---|----------|-----------|
-| H1 | Renda e escolaridade determinam o volume de gastos | `Income`, `Education`, `TotalSpend` |
-| H2 | Não-pais concentram gasto em produtos premium | `MntWines`, `MntMeatProducts`, `MntGoldProds`, `HasChildren` |
-| H3 | Menor recência = maior taxa de conversão em campanhas | `Recency`, `Response`, `TotalCampaignsAccepted` |
-| H4 | Engajamento digital correlaciona com resposta a campanhas | `NumWebPurchases`, `NumWebVisitsMonth`, `Response` |
-| H5 | Segmento "super compradores" concentra o faturamento (Pareto) | `TotalSpend`, Segmento RFM |
+| # | Hipótese | Teste Aplicado | Veredicto |
+|---|----------|---------------|-----------|
+| H1 | Renda e escolaridade determinam o volume de gastos | Pearson + ANOVA | ✅ Confirmada — r = 0.79, p < 0.05 |
+| H2 | Não-pais concentram gasto em produtos premium | Teste T independente (6 categorias) | ✅ Confirmada — todos p < 0.05 |
+| H3 | Menor recência = maior taxa de conversão | Comparação de médias + correlação | ✅ Confirmada com refinamento |
+| H4 | Engajamento digital correlaciona com conversão | Correlação por canal + WebEngagement | ✅ Confirmada com achado contraintuitivo |
+| H5 | Super compradores concentram o faturamento (Pareto) | Curva de Lorenz + Coeficiente de Gini | ✅ Confirmada |
 
 ---
 
-## 📦 Datasets
+## 📦 Dataset
 
-### Principal — Customer Personality Analysis
-| Item | Detalhe |
-|------|---------|
-| Fonte | [Kaggle — imakash3011](https://www.kaggle.com/datasets/imakash3011/customer-personality-analysis) |
+**Customer Personality Analysis** · Kaggle · [imakash3011](https://www.kaggle.com/datasets/imakash3011/customer-personality-analysis)
+
+| Dimensão | Valor |
+|----------|-------|
 | Instâncias | 2.240 clientes |
-| Atributos | 29 variáveis |
+| Atributos originais | 29 variáveis |
 | Separador | `\t` (TSV) |
-| Variável-alvo | `Response` — aceitou a última campanha (0/1) |
+| Variável-alvo | `Response` — desbalanceada (85% / 15%) |
 
 ```python
-URL_PRINCIPAL = (
-    "https://raw.githubusercontent.com/luskao92/customer-personality-analysis"
-    "/refs/heads/main/Customer%20Personality%20Analysis.csv"
+URL = (
+    "https://raw.githubusercontent.com/luskao92/customer-personality-analysis/refs/heads/main/data/marketing_campaign.csv"
 )
-df = pd.read_csv(URL_PRINCIPAL, sep="\t")
-```
-
-### Complementar — E-Commerce Customer Behavior
-| Item | Detalhe |
-|------|---------|
-| Fonte | [Kaggle — uom190346a](https://www.kaggle.com/datasets/uom190346a/e-commerce-customer-behavior-dataset) |
-| Uso | Validação cruzada de padrões comportamentais digitais (Seção 8) |
-
-```python
-URL_COMPLEMENTAR = (
-    "https://raw.githubusercontent.com/luskao92/customer-personality-analysis"
-    "/refs/heads/main/data/ecommerce_behavior.csv"
-)
-df_ecom = pd.read_csv(URL_COMPLEMENTAR)
+df = pd.read_csv(URL, sep="\t")
 ```
 
 ---
 
 ## ⚙️ Features Derivadas
 
-| Feature | Lógica | Seção |
+| Feature | Lógica | Papel |
 |---------|--------|-------|
-| `Age` | `2024 - Year_Birth` | Sprint 1 |
-| `Seniority_Days` | `data_ref - Dt_Customer` | Sprint 1 |
-| `TotalSpend` | Soma de todos os `MntXxx` | Sprint 1 |
-| `TotalPurchases` | Soma de todos os `NumXxxPurchases` | Sprint 1 |
-| `TotalCampaignsAccepted` | Soma de `AcceptedCmp1` a `AcceptedCmp5` | Sprint 1 |
-| `HasChildren` | `Kidhome + Teenhome > 0` | Sprint 1 |
-| `ChildrenTotal` | `Kidhome + Teenhome` | Sprint 1 |
-| `WebEngagement` | `NumWebPurchases / NumWebVisitsMonth` | Sprint 2 |
-| `RFM_Score` | Segmentação por Recência, Frequência e Valor | Sprint 2 |
+| `Age` | `2026 - Year_Birth` | Segmentação demográfica |
+| `Seniority_Days` | `2026-01-01 - Dt_Customer` | Maturidade do cliente |
+| `HasChildren` | `Kidhome + Teenhome > 0` | **Eixo central da análise** |
+| `TotalSpend` | Soma de todos `MntXxx` | Proxy de LTV |
+| `TotalPurchases` | Soma de todos `NumXxxPurchases` | Volume de engajamento |
+| `TotalCampaignsAccepted` | Soma de `AcceptedCmp1–5` | Histórico de conversão |
+| `WebEngagement` | `NumWebPurchases / NumWebVisitsMonth` | Qualidade do engajamento digital |
+| `RFM_Score` | Quartis R + F + M | Segmentação de valor |
+| `RFM_Segmento` | Score → Campeões / Leais / Potencial / Em risco / Inativos | Label analítico |
 
 ---
 
-## 🗂️ Estrutura do Notebook (10 Seções)
+## 🗂️ Estrutura do Notebook (9 Seções)
 
 ```
-1.  Descrição do Problema
-    1.1 Tipo de Problema
-    1.2 Hipóteses
-    1.3 Seleção e Restrições dos Dados
-    1.4 Dicionário de Atributos
+Seção 1  — Descrição do Problema
+           1.1 Contexto · 1.2 Tipo de aprendizado · 1.3 Hipóteses
+           1.4 Restrições · 1.5 Dicionário de Atributos (29 variáveis)
 
-2.  Importação das Bibliotecas e Carga de Dados
+Seção 2  — Importação das Bibliotecas e Carga de Dados
 
-3.  Análise Descritiva
-    3.1 Dimensões e Tipos de Dados
-    3.2 Primeiras Linhas e Inspeção Inicial
-    3.3 Valores Faltantes e Inconsistências
-    3.4 Resumo Estatístico
+Seção 3  — Análise Descritiva
+           3.1 Dimensões e tipos · 3.2 Primeiras linhas
+           3.3 Valores faltantes e inconsistências · 3.4 Resumo estatístico
 
-4.  Visualizações Exploratórias
-    4.1 Distribuição dos Atributos Numéricos
-    4.2 Distribuição dos Atributos Categóricos
-    4.3 Distribuição da Variável-Alvo (Response)
-    4.4 Análise Bivariada e Correlações
-    4.5 Análise por Perfil Familiar (HasChildren)
-    4.6 Análise por Canal de Compra
+Seção 4  — Feature Engineering
+           4.1 Variáveis derivadas (9 features) · 4.2 Segmentação RFM
 
-5.  Feature Engineering
-    5.1 Criação de Variáveis Derivadas
-    5.2 Segmentação RFM
+Seção 5  — Visualizações Exploratórias  ← 12 gráficos com análise textual
+           5.1 Distribuição numérica · 5.2 Distribuição categórica
+           5.3 Variável-alvo · 5.4 Correlações (heatmap)
+           5.5 Análise por perfil familiar · 5.6 Análise por canal
 
-6.  Pré-processamento
-    6.1 Limpeza e Tratamento de Nulos
-    6.2 Remoção de Outliers e Inconsistências
-    6.3 Normalização e Padronização
-    6.4 Discretização
-    6.5 One-Hot Encoding
-    6.6 Salvamento das Visões do Dataset
+Seção 6  — Pré-processamento            ← 8 passos + 4 visões salvas
+           6.1 Limpeza (8 passos justificados)
+           6.2–6.4 Normalização (MinMax) e Padronização (Standard)
+           6.5 Discretização · 6.6 One-Hot Encoding · 6.7 Dataset Encoded
 
-7.  Análise Pós-Pré-processamento
+Seção 7  — Análise Pós-Pré-processamento (verificação de integridade)
 
-8.  Contextualização com Mercado
-    8.1 Comportamento Omnichannel — NielsenIQ 2023
-    8.2 Validação Cruzada — Dataset E-Commerce Kaggle
+Seção 8  — Respondendo às Hipóteses    ← H1–H5 com testes estatísticos formais
 
-9.  Respondendo às Hipóteses
-
-10. Conclusão e Próximos Passos
+Seção 9  — Conclusão
+           9.1 Síntese · 9.2 Achados de negócio
+           9.3 Recomendações · 9.4 Limitações
 ```
 
 ---
 
-## ⚠️ Problemas de Qualidade Identificados
+## 🧹 Tratamento de Qualidade dos Dados
 
-| Problema | Campo | Tratamento planejado (Sprint 3) |
-|---------|-------|-------------------------------|
-| Valores nulos | `Income` (~24 registros) | Imputação pela mediana por grupo de escolaridade |
-| Outlier extremo | `Income` = 666.666 e > 150.000 | Remoção |
-| Nascimentos inválidos | `Year_Birth` < 1920 | Remoção |
-| Categorias inválidas | `Marital_Status` = `"Absurd"`, `"YOLO"` | Remoção |
-| Colunas constantes | `Z_CostContact` = 3, `Z_Revenue` = 11 | Drop na carga |
-
----
-
-## 📅 Progresso das Sprints
-
-| Sprint | Período | Status | Entregável |
-|--------|---------|--------|------------|
-| Sprint 0 | 25/03 | ✅ Concluída | Dataset, hipóteses, GitHub, README |
-| Sprint 1 | 26–29/03 | 🔄 Em andamento | Seções 1–3 do notebook |
-| Sprint 2 | 30/03–05/04 | ⏳ Pendente | Seções 4–5 (EDA visual + Feature Eng.) |
-| Sprint 3 | 06–10/04 | ⏳ Pendente | Seções 6–8 (Pré-proc. + Contextualização) |
-| Sprint 4 | 11–12/04 | ⏳ Pendente | Seções 9–10 + revisão final + entrega |
+| Problema identificado | Campo | Decisão |
+|----------------------|-------|---------|
+| Valores nulos (~1%) | `Income` | Imputação pela mediana por grupo de `Education` |
+| Outlier extremo ($666k) | `Income` | Remoção (> 13σ acima da média) |
+| Corte em $150k | `Income` | Preserva cauda legítima, remove único ponto anômalo |
+| Nascimentos implausíveis | `Year_Birth` < 1920 | Remoção |
+| Categorias inválidas | `Marital_Status` = "Absurd", "YOLO" | Remoção |
+| Colunas constantes | `Z_CostContact`, `Z_Revenue` | Drop na carga |
 
 ---
 
-## 🛠️ Tecnologias
+## 📁 Estrutura do Repositório
 
-`Python 3.10+` `Pandas` `NumPy` `Matplotlib` `Seaborn` `Scikit-learn` `Google Colab`
+```
+customer-personality-analysis/
+│
+├── README.md
+├── LICENSE
+├── notebook_customer_personality_-_Final_Version.ipynb
+│
+├── marketing_campaign.csv     ← dataset principal - Customer Personality Analysis · TSV · 2.240 linhas
+├── marketing_campaign_clean.csv          ← visão 1 · pós-limpeza · escala original
+├── marketing_campaign_normalized.csv     ← visão 2 · MinMaxScaler [0, 1]
+├── marketing_campaign_standardized.csv   ← visão 3 · StandardScaler (μ=0, σ=1)
+└── marketing_campaign_encoded.csv        ← visão 4 · OHE + discretização
+```
+
+---
+
+## 🛠️ Stack
+
+`Python 3.10+` · `Pandas` · `NumPy` · `Matplotlib` · `Seaborn` · `Scikit-learn` · `SciPy` · `Google Colab`
+
+---
+
+## 📋 Checklist MVP — PUC-Rio
+
+- [x] Definição do problema com contexto de negócio
+- [x] Tipo de aprendizado declarado e justificado
+- [x] 5 hipóteses formuladas e testadas formalmente com testes estatísticos
+- [x] Dicionário de atributos completo (29 variáveis em 4 blocos)
+- [x] Análise descritiva completa (dimensões, tipos, nulos, estatísticas)
+- [x] 12 visualizações exploratórias com parágrafo de análise após cada gráfico
+- [x] Pré-processamento com 8 passos, cada um justificado textualmente
+- [x] Normalização, padronização, discretização e OHE aplicados
+- [x] 4 visões do dataset salvas
+- [x] Dataset carregado via URL raw do GitHub
+- [x] Repositório público
 
 ---
 
 ## 👤 Autor
 
 **Lucas Alves Medeiros** · [@luskao92](https://github.com/luskao92)
+PUC-Rio
 
 ---
 
 ## 📄 Licença
 
-Este projeto está sob a licença [MIT](LICENSE).
+[MIT](LICENSE)
